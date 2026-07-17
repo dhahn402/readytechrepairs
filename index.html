@@ -77,6 +77,31 @@
   footer{border-top:1px solid var(--line);padding:2.2rem 0;text-align:center;color:var(--muted);font-size:.9rem}
   footer b{color:var(--ink)}
   .verse{color:var(--cyan);font-family:var(--display);font-style:italic;margin-top:.6rem}
+  /* Phone buy-value tool */
+  .tool{max-width:640px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(1.5rem,4vw,2.2rem);box-shadow:0 12px 34px -24px rgba(19,39,65,.5)}
+  .tool label{display:block;font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:.35rem}
+  .tool .trow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  @media(max-width:480px){.tool .trow{grid-template-columns:1fr}}
+  .tool select,.tool input{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:.72rem .8rem;font-size:1rem;font-family:inherit}
+  .tool .out{margin-top:.2rem;text-align:center;background:var(--paper-2);border:1px dashed var(--blue);border-radius:12px;padding:1.2rem}
+  .tool .out .n{font-family:var(--display);font-size:1.9rem;font-weight:800;color:var(--blue)}
+  .tool .out .l{font-size:.82rem;color:var(--muted);margin-top:.2rem}
+  /* Comparison */
+  .cmp{max-width:720px;margin:0 auto;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  .cmp .r{display:grid;grid-template-columns:1.7fr 1fr 1fr}
+  .cmp .r + .r{border-top:1px solid var(--line)}
+  .cmp .r.h{background:var(--ink);color:#fff}
+  .cmp .c{padding:.85rem 1rem;font-size:.92rem;border-left:1px solid var(--line)}
+  .cmp .c:first-child{border-left:none;font-weight:600}
+  .cmp .r.h .c{border-color:rgba(255,255,255,.15);font-weight:700;text-align:center}
+  .cmp .c.v{text-align:center}
+  .cmp .yes{color:var(--green);font-weight:800}
+  .cmp .no{color:#c0546a;font-weight:700}
+  /* Tech tips */
+  .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem}
+  .tip{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:1.3rem}
+  .tip h3{font-family:var(--sans);font-size:1.02rem;font-weight:700;margin-bottom:.3rem}
+  .tip p{color:var(--muted);font-size:.92rem}
 </style>
 </head>
 <body>
@@ -91,7 +116,7 @@
     <div class="wrap">
       <span class="eyebrow">New Bern &amp; Eastern NC</span>
       <h1>Fast, honest device repair &mdash; <span class="c">and your data respected.</span></h1>
-      <p class="lead">Cracked screen? Slow laptop? Phone that won&rsquo;t turn on? We fix it quick, quote it up front, and treat your data and privacy like our own. Free diagnostics, no pressure, ever.</p>
+      <p class="lead">Cracked screen? Slow laptop? Phone that won&rsquo;t turn on? <strong>Any brand, any model</strong> &mdash; we fix it fast, quote it up front, and treat your data like our own. We also <strong>buy phones</strong> (working or broken) for cash. Free diagnostics, and real savings over the mall kiosks.</p>
       <div class="cta-row">
         <a class="btn btn-blue" href="tel:+12526266236">&#128222; Call (252) 626-6236</a>
         <a class="btn btn-ghost" href="sms:+12526266236">&#128241; Text your problem</a>
@@ -111,6 +136,45 @@
         <div class="card"><div class="em">&#128421;</div><h3>Tablets &amp; More</h3><p>iPads, tablets, game consoles, and the odd gadget &mdash; ask us.</p></div>
         <div class="card"><div class="em">&#128269;</div><h3>Free Diagnostics</h3><p>Not sure what&rsquo;s wrong? We&rsquo;ll look at it free and tell you straight.</p></div>
       </div>
+      <p style="text-align:center;color:var(--muted);font-size:.95rem;margin-top:1.4rem;max-width:60ch;margin-left:auto;margin-right:auto"><strong>Any brand, any model, any problem.</strong> With our repair connections and parts network, we get it fixed right &mdash; and save you money over the mall kiosks and drop-off shops.</p>
+    </div>
+  </section>
+
+  <section id="buyphones" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">We Buy Phones</span><h2>Turn your old or broken phone into cash</h2><p>Working, cracked, or completely dead &mdash; we buy phones of every brand and model. Get a ballpark in seconds, then a firm offer.</p></div>
+      <div class="tool">
+        <div class="trow">
+          <div>
+            <label for="pbrand">Brand</label>
+            <select id="pbrand"><option value="1">Apple / iPhone</option><option value="0.8">Samsung</option><option value="0.7">Google Pixel</option><option value="0.5">Other</option></select>
+          </div>
+          <div>
+            <label for="ptier">How new is it?</label>
+            <select id="ptier"><option value="400">Latest flagship (~last year)</option><option value="200" selected>Recent (1&ndash;3 years)</option><option value="80">Older / budget</option></select>
+          </div>
+        </div>
+        <label for="pcond">Condition</label>
+        <select id="pcond"><option value="0.85">Like new</option><option value="0.6" selected>Good &mdash; works fine</option><option value="0.35">Cracked screen</option><option value="0.15">Not working / for parts</option></select>
+        <div class="out" style="margin-top:1.1rem"><div class="n" id="pOut">&mdash;</div><div class="l">Ballpark cash range</div></div>
+        <p style="font-size:.8rem;color:var(--muted);text-align:center;margin-top:.8rem">A rough guide only &mdash; we confirm with a firm offer after a quick look. Reflects the used market (cracked phones often fetch 30&ndash;50%, for-parts 10&ndash;20%).</p>
+        <div style="text-align:center;margin-top:1rem"><a class="btn btn-green" href="sms:+12526266236">&#128241; Text a photo for a firm offer &rarr;</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why-us">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">The Honest Edge</span><h2>Why us over the mall kiosk or big-box store</h2></div>
+      <div class="cmp">
+        <div class="r h"><div class="c">&nbsp;</div><div class="c">Ready Tech</div><div class="c">Big Stores</div></div>
+        <div class="r"><div class="c">Free diagnostics</div><div class="c v yes">Yes</div><div class="c v no">Often a fee</div></div>
+        <div class="r"><div class="c">Same-day on most repairs</div><div class="c v yes">Yes</div><div class="c v no">Days&ndash;weeks</div></div>
+        <div class="r"><div class="c">Fair, up-front pricing</div><div class="c v yes">Yes</div><div class="c v no">Premium</div></div>
+        <div class="r"><div class="c">Your data respected</div><div class="c v yes">Yes</div><div class="c v">&mdash;</div></div>
+        <div class="r"><div class="c">We buy your old phone too</div><div class="c v yes">Yes</div><div class="c v no">Trade-in only</div></div>
+      </div>
+      <p class="fine">Reflects typical industry differences (e.g., mall &amp; big-box screen repairs often run $100&ndash;$130+ with paid diagnostics); specific store policies vary.</p>
     </div>
   </section>
 
@@ -132,6 +196,19 @@
         <div class="step"><h3>Up-front quote</h3><p>A clear price before any work &mdash; no surprises, no pressure.</p></div>
         <div class="step"><h3>Fixed fast</h3><p>Most repairs done quickly, and your data stays yours.</p></div>
       </div>
+    </div>
+  </section>
+
+  <section id="tips" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Tech Tips &amp; Updates</span><h2>Free advice to keep your devices running</h2></div>
+      <div class="tips">
+        <div class="tip"><h3>Back up before you break down</h3><p>Photos and contacts are irreplaceable. Turn on iCloud or Google backup today &mdash; before a drop or dead battery costs you.</p></div>
+        <div class="tip"><h3>Save your battery</h3><p>Keep your charge between 20&ndash;80% and skip cheap chargers. It can add a year or more to your battery&rsquo;s life.</p></div>
+        <div class="tip"><h3>Water damage? Act fast</h3><p>Power it off, don&rsquo;t charge it, and bring it in quickly. Rice is a myth &mdash; professional drying saves far more phones.</p></div>
+        <div class="tip"><h3>Slow phone or computer?</h3><p>Usually it&rsquo;s storage, updates, or malware &mdash; not &ldquo;time for a new one.&rdquo; A tune-up is often cheaper than you&rsquo;d think.</p></div>
+      </div>
+      <p class="fine">Want device news, deals, and tips? Text us and we&rsquo;ll keep you in the loop.</p>
     </div>
   </section>
 
@@ -157,5 +234,18 @@
       <div class="verse">&ldquo;Whatever you do, work at it with all your heart.&rdquo; &mdash; Colossians 3:23</div>
     </div>
   </footer>
+  <script>
+    function calcPhone(){
+      var brand=parseFloat(document.getElementById('pbrand').value);
+      var tier=parseFloat(document.getElementById('ptier').value);
+      var cond=parseFloat(document.getElementById('pcond').value);
+      var mid=brand*tier*cond;
+      var lo=Math.max(5,Math.round(mid*0.75/5)*5);
+      var hi=Math.max(lo+5,Math.round(mid*1.25/5)*5);
+      document.getElementById('pOut').textContent='$'+lo+' – $'+hi;
+    }
+    ['pbrand','ptier','pcond'].forEach(function(id){document.getElementById(id).addEventListener('change',calcPhone);});
+    calcPhone();
+  </script>
 </body>
 </html>
