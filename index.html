@@ -212,6 +212,13 @@
     </div>
   </section>
 
+  <section id="news">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Live Tech News</span><h2>What&rsquo;s happening in tech right now</h2><p>Fresh headlines, pulled in automatically &mdash; so you&rsquo;re always in the know.</p></div>
+      <div id="newsFeed" class="tips"><p style="grid-column:1/-1;text-align:center;color:var(--muted)">Loading the latest headlines&hellip;</p></div>
+    </div>
+  </section>
+
   <section id="contact">
     <div class="wrap">
       <div class="cta-band">
@@ -246,6 +253,28 @@
     }
     ['pbrand','ptier','pcond'].forEach(function(id){document.getElementById(id).addEventListener('change',calcPhone);});
     calcPhone();
+
+    function esc(t){var d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
+    (function loadNews(){
+      var el=document.getElementById('newsFeed');
+      if(!el){return;}
+      var feed='https://www.theverge.com/rss/index.xml';
+      fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feed))
+        .then(function(r){return r.json();})
+        .then(function(d){
+          if(!d.items||!d.items.length){throw new Error('no items');}
+          el.innerHTML=d.items.slice(0,6).map(function(it){
+            var dt=new Date(it.pubDate);
+            var when=isNaN(dt.getTime())?'':dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+            return '<a class="tip" href="'+esc(it.link)+'" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit">'+
+                   '<h3 style="color:var(--blue)">'+esc(it.title)+'</h3>'+
+                   '<p>'+when+(d.feed&&d.feed.title?' &middot; '+esc(d.feed.title):'')+'</p></a>';
+          }).join('');
+        })
+        .catch(function(){
+          el.innerHTML='<p style="grid-column:1/-1;text-align:center;color:var(--muted)">Latest tech news loads here when available &mdash; check back anytime, or text us for what&rsquo;s new.</p>';
+        });
+    })();
   </script>
 </body>
 </html>
