@@ -153,6 +153,67 @@
     </div>
   </section>
 
+  <!-- Diagnostic Bay console widget (no API key) -->
+  <style>
+    #diagnostics{background:var(--ink);border-top:1px solid #1e3a5c;border-bottom:1px solid #1e3a5c}
+    #diagnostics .eyebrow{color:var(--cyan)}
+    #diagnostics h2{color:var(--white)}
+    #diagnostics .head p{color:#9db3d0}
+    .console{max-width:720px;margin:1.6rem auto 0;background:#0a1420;border:1px solid #1e3a5c;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px rgba(31,190,207,.12),0 20px 54px rgba(0,0,0,.55)}
+    .con-top{display:flex;align-items:center;gap:8px;padding:11px 15px;background:#0d1c2e;border-bottom:1px solid #1e3a5c}
+    .con-top .dot{width:11px;height:11px;border-radius:50%}
+    .con-top .r{background:#ff5f57}.con-top .y{background:#febc2e}.con-top .g{background:#28c840}
+    .con-title{margin-left:8px;font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.1em;color:var(--cyan)}
+    .con-title .cur{animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:0}}
+    .con-body{padding:16px 18px}
+    .con-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .con-controls select{flex:1;min-width:150px;background:#0d1c2e;border:1px solid #1e3a5c;color:#dbe9f7;border-radius:8px;padding:11px;font-size:.95rem}
+    .con-controls button{background:linear-gradient(180deg,var(--cyan),#159aa8);color:#04222b;border:none;border-radius:8px;padding:11px 20px;font-weight:800;cursor:pointer;letter-spacing:.03em}
+    .con-controls button:hover{filter:brightness(1.08)}
+    .con-out{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;line-height:1.75;color:#7ee0c9;background:#06101a;border:1px solid #123049;border-radius:8px;padding:15px 16px;white-space:pre-wrap;min-height:132px;margin:0}
+  </style>
+  <section id="diagnostics">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">🛰️ Diagnostic Bay</span><h2>Run a quick diagnostic</h2><p>Tell the console what's wrong and get an instant, honest read on the likely fix. A real diagnosis is always free.</p></div>
+      <div class="console">
+        <div class="con-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="con-title">READY TECH &middot; DIAGNOSTIC BAY :: ONLINE<span class="cur">&#9646;</span></span></div>
+        <div class="con-body">
+          <div class="con-controls">
+            <select id="dxDevice" aria-label="Device"><option>📱 Phone</option><option>💻 Laptop</option><option>🖥️ Desktop</option><option>📲 Tablet</option><option>🎮 Game console</option></select>
+            <select id="dxSymptom" aria-label="Symptom"><option value="cracked">Cracked / broken screen</option><option value="power">Won't turn on</option><option value="slow">Running slow</option><option value="battery">Battery drains fast</option><option value="water">Water / liquid damage</option><option value="virus">Viruses / pop-ups</option><option value="charge">Won't charge</option></select>
+            <button id="dxRun">▶ Run diagnostic</button>
+          </div>
+          <pre id="dxOut" class="con-out">> Awaiting input… select your device and symptom, then Run diagnostic.</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var DX={cracked:['Screen / digitizer damage.','Replace with a quality, tested screen — often same-day.'],
+      power:['Likely the battery, charge port, or logic board.','Free diagnosis pinpoints it — most are a simple battery or port fix.'],
+      slow:['Full storage, an aging drive, or malware.','Cleanup, an SSD upgrade, or a fresh setup — your data kept safe.'],
+      battery:['A worn-out battery.','Quality battery replacement, tested before you leave.'],
+      water:['Liquid damage — corrosion is a real risk. Act fast!','Power it OFF now and bring it in — we clean, dry, and assess right away.'],
+      virus:['Malware, adware, or browser pop-ups.','Full removal and hardening — your files stay intact.'],
+      charge:['Charge port, cable, or battery.','Port cleaning or replacement — quick and affordable.']};
+    var out=document.getElementById('dxOut'), btn=document.getElementById('dxRun');
+    btn.addEventListener('click',function(){
+      var dev=document.getElementById('dxDevice').value;
+      var sel=document.getElementById('dxSymptom'); var d=DX[sel.value]||['Unknown','Free diagnosis will pinpoint it.'];
+      var symTxt=sel.selectedOptions[0].text; btn.disabled=true;
+      var steps=['> Booting diagnostic core…','> Scanning '+dev+'…','> Cross-referencing symptom…','> ANALYSIS COMPLETE.'];
+      out.textContent=''; var i=0;
+      var iv=setInterval(function(){
+        if(i<steps.length){out.textContent+=steps[i]+'\n';i++;}
+        else{clearInterval(iv);
+          out.textContent+='\n> DEVICE: '+dev+'\n> SYMPTOM: '+symTxt+'\n> LIKELY CAUSE: '+d[0]+'\n> OUR FIX: '+d[1]+'\n\n> NEXT STEP: Free diagnosis + up-front quote.\n> Text a photo to (252) 626-6236 — we’ll take it from here. 🖖';
+          btn.disabled=false;}
+      },340);
+    });
+  })();
+  </script>
+
   <section id="buyphones" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
     <div class="wrap">
       <div class="head"><span class="eyebrow">We Buy Phones</span><h2>Turn your old or broken phone into cash</h2><p>Working, cracked, or completely dead &mdash; we buy phones of every brand and model. Get a ballpark in seconds, then a firm offer.</p></div>
@@ -393,6 +454,26 @@
           el.innerHTML='<p style="grid-column:1/-1;text-align:center;color:var(--muted)">Latest tech news loads here when available &mdash; check back anytime, or text us for what&rsquo;s new.</p>';
         });
     })();
+  </script>
+  <!-- Theme player — legal space track, CC-BY -->
+  <style>
+    .rt-player{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:11px;background:rgba(10,20,32,.95);backdrop-filter:blur(8px);border:1px solid #1e3a5c;border-radius:999px;padding:8px 16px 8px 8px;box-shadow:0 12px 32px rgba(0,0,0,.55)}
+    .rt-player button{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(180deg,#1fbecf,#159aa8);color:#04222b;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;line-height:1}
+    .rt-player .t{font-weight:700;font-size:.82rem;color:#eef4fc}
+    .rt-player .s{font-size:.6rem;color:#9db3d0}
+    @media(max-width:520px){.rt-player .s{display:none}}
+  </style>
+  <div class="rt-player" aria-label="Theme music">
+    <button id="rtBtn" aria-label="Play theme">▶</button>
+    <div>
+      <div class="t" id="rtT">▶ Engage</div>
+      <div class="s">&ldquo;Space Fighter Loop&rdquo; — Kevin MacLeod (incompetech.com) · CC BY</div>
+    </div>
+    <audio id="rtA" src="theme.mp3" preload="none" loop></audio>
+  </div>
+  <script>
+  (function(){var a=document.getElementById('rtA'),b=document.getElementById('rtBtn'),t=document.getElementById('rtT');if(!a||!b)return;
+  b.addEventListener('click',function(){if(a.paused){a.play().then(function(){b.textContent='❚❚';t.textContent='Warp speed 🚀';}).catch(function(){t.textContent='Tap again ▶';});}else{a.pause();b.textContent='▶';t.textContent='▶ Engage';}});})();
   </script>
 </body>
 </html>
