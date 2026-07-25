@@ -364,6 +364,93 @@
   })();
   </script>
 
+  <!-- Live tech-stock ticker (TradingView, no API key) -->
+  <section id="techmarkets" style="background:#0a1420;border-top:1px solid #1e3a5c;padding:0">
+    <div style="max-width:1100px;margin:0 auto">
+      <p style="text-align:center;color:var(--cyan);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;padding:15px 0 4px;margin:0">📈 Tech Markets — Live</p>
+      <div id="techticker"></div>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var host=document.getElementById('techticker'); if(!host)return;
+    var c=document.createElement('div');c.className='tradingview-widget-container';
+    var w=document.createElement('div');w.className='tradingview-widget-container__widget';c.appendChild(w);
+    var s=document.createElement('script');s.src='https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';s.async=true;
+    s.text=JSON.stringify({symbols:[
+      {proName:'NASDAQ:NVDA',title:'Nvidia'},{proName:'NASDAQ:AAPL',title:'Apple'},{proName:'NASDAQ:MSFT',title:'Microsoft'},
+      {proName:'NASDAQ:NBIS',title:'NBIS'},{proName:'AMEX:KEEL',title:'KEEL'},{proName:'NASDAQ:AMD',title:'AMD'},{proName:'NASDAQ:GOOGL',title:'Alphabet'}
+    ],showSymbolLogo:true,colorTheme:'dark',isTransparent:true,displayMode:'adaptive',locale:'en'});
+    c.appendChild(s);host.appendChild(c);
+  })();
+  </script>
+
+  <!-- Mission Control — live space data, no API key (NASA APOD uses DEMO_KEY; drop a free key for higher limits) -->
+  <style>
+    #mission-control{background:#06101a;border-top:1px solid #1e3a5c;border-bottom:1px solid #1e3a5c}
+    #mission-control .eyebrow{color:var(--cyan)}
+    #mission-control h2{color:var(--white)}
+    #mission-control .head p{color:#9db3d0}
+    .mc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:16px;margin-top:1.6rem}
+    .mc-card{background:#0a1420;border:1px solid #1e3a5c;border-radius:14px;padding:16px;box-shadow:0 12px 34px rgba(0,0,0,.4)}
+    .mc-title{font-weight:800;color:var(--cyan);margin-bottom:10px;font-size:.95rem}
+    .mc-read{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;line-height:1.7;color:#7ee0c9;margin-top:10px;white-space:pre-wrap}
+    .mc-read b{color:#a9d4e8}
+    #apodImg{height:150px;border-radius:10px;background:#0a1420 center/cover no-repeat;display:block}
+  </style>
+  <section id="mission-control">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">🌌 Mission Control</span><h2>We speak fluent space</h2><p>Live from orbit and the launch pad — because the same curiosity that fixes your phone reaches for the stars. AI folks and tech heads, this one's for you.</p></div>
+      <div class="mc-grid">
+        <div class="mc-card">
+          <div class="mc-title">🛰️ ISS — Live Position</div>
+          <div id="issMap" style="height:180px;border-radius:10px;overflow:hidden;background:#0a1420"></div>
+          <div id="issReadout" class="mc-read">&gt; Locating the station…</div>
+        </div>
+        <div class="mc-card">
+          <div class="mc-title">🚀 Next Launch</div>
+          <div id="launchOut" class="mc-read" style="min-height:200px">&gt; Loading the launch manifest…</div>
+        </div>
+        <div class="mc-card">
+          <div class="mc-title">🌠 NASA — Star of the Day</div>
+          <a id="apodLink" href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener"><div id="apodImg"></div></a>
+          <div id="apodOut" class="mc-read">&gt; Focusing the telescope…</div>
+        </div>
+      </div>
+      <p style="text-align:center;color:#5a6b82;font-size:.72rem;margin-top:1.1rem">Live data via wheretheiss.at, The Space Devs &amp; NASA APOD. Not affiliated with NASA or SpaceX — we just love this stuff. 🖖</p>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var issReadout=document.getElementById('issReadout'); var map=null, marker=null;
+    function region(lat,lon){ if(lat>-60&&lat<60){ if(lon>-30&&lon<60)return'over Africa / Europe'; if(lon>=60&&lon<150)return'over Asia'; if(lon>=150||lon<-120)return'over the Pacific'; return'over the Americas / Atlantic'; } return lat>=60?'over the Arctic':'over the Southern Ocean'; }
+    function iss(){
+      fetch('https://api.wheretheiss.at/v1/satellites/25544').then(function(r){return r.json();}).then(function(d){
+        if(!d||d.latitude==null)return; var lat=d.latitude, lon=d.longitude;
+        if(!map && typeof L!=='undefined'){ map=L.map('issMap',{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:false}).setView([lat,lon],2); L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(map); marker=L.marker([lat,lon]).addTo(map); }
+        else if(marker){ marker.setLatLng([lat,lon]); map.setView([lat,lon],map.getZoom()); }
+        if(issReadout)issReadout.innerHTML='&gt; <b>'+Math.round(d.velocity).toLocaleString()+' km/h</b> · <b>'+Math.round(d.altitude)+' km</b> up\n&gt; '+region(lat,lon)+' ('+lat.toFixed(1)+'°, '+lon.toFixed(1)+'°)\n&gt; '+(d.visibility==='daylight'?'☀️ in daylight':'🌙 in Earth’s shadow');
+      }).catch(function(){ if(issReadout)issReadout.textContent='> Signal lost — try again shortly.'; });
+    }
+    iss(); setInterval(iss,5000);
+
+    fetch('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=1').then(function(r){return r.json();}).then(function(d){
+      var el=document.getElementById('launchOut'); if(!el)return; var x=d&&d.results&&d.results[0]; if(!x){el.textContent='> Manifest unavailable — check back soon.';return;}
+      var when=x.net?new Date(x.net):null; var prov=(x.launch_service_provider&&x.launch_service_provider.name)||'';
+      var s='&gt; <b>'+(x.name||'TBD')+'</b>\n'; if(prov)s+='&gt; Provider: '+prov+'\n';
+      if(when){ var days=Math.round((when-Date.now())/86400000); s+='&gt; '+when.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})+'\n&gt; T‑minus ~'+(days<=0?'hours away 🔥':days+' day'+(days!==1?'s':'')); }
+      el.innerHTML=s;
+    }).catch(function(){ var el=document.getElementById('launchOut'); if(el)el.textContent='> Manifest unavailable — check back soon.'; });
+
+    fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true').then(function(r){return r.json();}).then(function(d){
+      var img=document.getElementById('apodImg'), out=document.getElementById('apodOut'), link=document.getElementById('apodLink'); if(!d)return;
+      var src=(d.media_type==='image')?d.url:(d.thumbnail_url||''); if(img&&src)img.style.backgroundImage='url("'+src+'")';
+      if(out)out.innerHTML='&gt; <b>'+(d.title||'')+'</b>\n&gt; '+(d.date||'')+(d.copyright?('\n&gt; © '+d.copyright.trim()):'\n&gt; Image credit: NASA');
+      if(link&&(d.hdurl||d.url))link.href=d.hdurl||d.url;
+    }).catch(function(){ var out=document.getElementById('apodOut'); if(out)out.textContent='> Telescope offline — the stars will wait.'; });
+  })();
+  </script>
+
   <section id="contact">
     <div class="wrap">
       <div class="cta-band">
