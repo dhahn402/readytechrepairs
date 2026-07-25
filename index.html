@@ -282,6 +282,27 @@
     </div>
   </section>
 
+  <!-- Service area map — free OpenStreetMap / Leaflet, no API key -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <section id="area" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">&#128205; Where We Are</span><h2>Serving New Bern &amp; all of Eastern NC</h2><p>Local drop-off right here in New Bern &mdash; and we cover the surrounding towns and the Crystal Coast. Not close by? We do mail-in repair too.</p></div>
+      <div id="rtr-map" role="img" aria-label="Map showing the Ready Tech Repairs service area centered on New Bern, North Carolina" style="height:360px;border-radius:16px;border:1px solid var(--line);box-shadow:0 10px 30px -22px rgba(19,39,65,.5);position:relative;z-index:0"></div>
+      <div style="text-align:center;margin-top:1.3rem"><a class="btn btn-green" href="sms:+12526266236">&#128172; Text us your device &amp; town &rarr;</a></div>
+    </div>
+  </section>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  (function(){
+    if(typeof L==='undefined'){ var m=document.getElementById('rtr-map'); if(m){m.style.display='none';} return; }
+    var nb=[35.1085,-77.0441];
+    var map=L.map('rtr-map',{scrollWheelZoom:false,attributionControl:true}).setView(nb,9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+    L.circle(nb,{radius:62000,color:'#2563eb',weight:1.5,fillColor:'#2563eb',fillOpacity:.10}).addTo(map);
+    L.marker(nb).addTo(map).bindPopup('<b>Ready Tech Repairs</b><br>New Bern, NC &middot; Text (252) 626-6236');
+  })();
+  </script>
+
   <section id="contact">
     <div class="wrap">
       <div class="cta-band">
