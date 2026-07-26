@@ -599,5 +599,23 @@
   (function(){var a=document.getElementById('rtA'),b=document.getElementById('rtBtn'),t=document.getElementById('rtT');if(!a||!b)return;
   b.addEventListener('click',function(){if(a.paused){a.play().then(function(){b.textContent='❚❚';t.textContent='Warp speed 🚀';}).catch(function(){t.textContent='Tap again ▶';});}else{a.pause();b.textContent='▶';t.textContent='▶ Engage';}});})();
   </script>
+
+  <!-- Sticky phone-first contact pill (Text + Call) — bottom-right, clear of the Engage player on the left -->
+  <style>
+    .rt-hail{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;gap:8px;align-items:stretch}
+    .rt-hail a{display:flex;align-items:center;gap:7px;font-weight:800;font-size:.9rem;line-height:1;padding:.72rem 1.1rem;border-radius:999px;color:#fff;box-shadow:0 12px 32px rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.14);transition:transform .15s,filter .2s}
+    .rt-hail a:hover{transform:translateY(-2px);filter:brightness(1.06)}
+    .rt-hail a .em{font-size:1.05rem}
+    .rt-hail .t{background:linear-gradient(180deg,#28c882,#1a9e63)}
+    .rt-hail .c{background:linear-gradient(180deg,#4b93f8,#2f81f7)}
+    .rt-hail .t{animation:rtGlow 2.6s ease-in-out infinite}
+    @keyframes rtGlow{0%,100%{box-shadow:0 12px 32px rgba(0,0,0,.42),0 0 0 0 rgba(34,181,115,.45)}50%{box-shadow:0 12px 32px rgba(0,0,0,.42),0 0 0 8px rgba(34,181,115,0)}}
+    @media(max-width:520px){.rt-hail{right:12px;bottom:12px;gap:6px}.rt-hail a{padding:.68rem .82rem;font-size:.84rem}.rt-hail a .lbl{display:none}.rt-hail a .em{font-size:1.15rem}}
+    @media(prefers-reduced-motion:reduce){.rt-hail .t{animation:none}}
+  </style>
+  <div class="rt-hail" aria-label="Contact Ready Tech Repairs">
+    <a class="t" href="sms:+12526266236" aria-label="Text Ready Tech Repairs at (252) 626-6236"><span class="em">&#128172;</span><span class="lbl">Text</span></a>
+    <a class="c" href="tel:+12526266236" aria-label="Call Ready Tech Repairs at (252) 626-6236"><span class="em">&#128222;</span><span class="lbl">Call</span></a>
+  </div>
 </body>
 </html>
