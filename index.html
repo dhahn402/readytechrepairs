@@ -248,7 +248,15 @@
         <select id="pcond"><option value="0.85">Like new</option><option value="0.6" selected>Good &mdash; works fine</option><option value="0.35">Cracked screen</option><option value="0.15">Not working / for parts</option></select>
         <div class="out" style="margin-top:1.1rem"><div class="n" id="pOut">&mdash;</div><div class="l">Ballpark cash range</div></div>
         <p style="font-size:.8rem;color:var(--muted);text-align:center;margin-top:.8rem">A rough guide only &mdash; we confirm with a firm offer after a quick look. Reflects the used market (cracked phones often fetch 30&ndash;50%, for-parts 10&ndash;20%).</p>
-        <div style="text-align:center;margin-top:1rem"><a class="btn btn-green" href="sms:+12526266236">&#128241; Text a photo for a firm offer &rarr;</a></div>
+        <div style="margin-top:1.2rem;border-top:1px solid var(--line);padding-top:1.15rem">
+          <label for="pphone">Want this quote saved and sent to you? Drop your number &mdash; optional</label>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.7rem">
+            <input id="pphone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(252) 555-0123" style="flex:1 1 190px;width:auto" />
+            <button type="button" class="btn btn-blue" style="flex:1 1 auto;border:0;cursor:pointer;font-family:inherit" onclick="sendQuote()">&#128242; Text me this quote</button>
+          </div>
+          <p id="pQuoteMsg" style="display:none;font-size:.86rem;font-weight:600;color:var(--green);text-align:center;margin:.75rem 0 0"></p>
+        </div>
+        <div style="text-align:center;margin-top:1.1rem"><a class="btn btn-green" id="pSmsBtn" href="sms:+12526266236">&#128241; Text a photo for a firm offer &rarr;</a></div>
       </div>
     </div>
   </section>
@@ -561,6 +569,10 @@
     </div>
   </footer>
   <script>
+    // Label of the currently selected option (the values are pricing multipliers).
+    function selText(id){var s=document.getElementById(id);return s&&s.options[s.selectedIndex]?s.options[s.selectedIndex].text:'';}
+    var quote={brand:'',tier:'',cond:'',range:''};
+
     function calcPhone(){
       var brand=parseFloat(document.getElementById('pbrand').value);
       var tier=parseFloat(document.getElementById('ptier').value);
@@ -568,10 +580,50 @@
       var mid=brand*tier*cond;
       var lo=Math.max(5,Math.round(mid*0.75/5)*5);
       var hi=Math.max(lo+5,Math.round(mid*1.25/5)*5);
-      document.getElementById('pOut').textContent='$'+lo+' – $'+hi;
+      var range='$'+lo+' – $'+hi;
+      document.getElementById('pOut').textContent=range;
+
+      quote={brand:selText('pbrand'),tier:selText('ptier'),cond:selText('pcond'),range:range};
+      // Pre-fill the text so David sees WHAT they priced, not a blank message.
+      var sms=document.getElementById('pSmsBtn');
+      if(sms){
+        sms.href='sms:+12526266236?&body='+encodeURIComponent(
+          'Hi Ready Tech — I got a ballpark on your site.\n'+
+          'Device: '+quote.brand+'\nAge: '+quote.tier+'\nCondition: '+quote.cond+'\n'+
+          'Your estimate: '+quote.range+'\n\n(Photo attached)');
+      }
     }
     ['pbrand','ptier','pcond'].forEach(function(id){document.getElementById(id).addEventListener('change',calcPhone);});
     calcPhone();
+
+    // Optional capture: save the quote + their number so a hot lead isn't lost
+    // when they price a phone and then wander off without texting.
+    function sendQuote(){
+      var el=document.getElementById('pphone');
+      var phone=el?el.value.trim():'';
+      var msg=document.getElementById('pQuoteMsg');
+      var show=function(t,ok){if(!msg)return;msg.textContent=t;msg.style.color=ok?'var(--green)':'var(--blue)';msg.style.display='block';};
+      if(phone.replace(/\D/g,'').length<10){
+        show('Add a 10-digit number and we’ll text this quote right over.',false);
+        if(el){el.focus();}
+        return;
+      }
+      show('Sending…',false);
+      fetch('https://formspree.io/f/xbdvqvrk',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({
+          phone:phone,device:quote.brand,age:quote.tier,condition:quote.cond,estimate:quote.range,
+          source:'readytechrepairs.com — phone payout estimator',
+          _subject:'Phone buyback quote — '+phone+' — '+quote.brand+' '+quote.range
+        })
+      }).then(function(){
+        show('🙏 Got it — we’ll text you at '+phone+' to firm up your offer.',true);
+        if(el){el.value='';}
+      }).catch(function(){
+        show('That didn’t go through. Text us at (252) 626-6236 and we’ll take care of you.',false);
+      });
+    }
 
     function esc(t){var d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
     (function loadNews(){
